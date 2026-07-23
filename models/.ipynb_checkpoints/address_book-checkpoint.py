@@ -2,7 +2,7 @@
 address_book.py
 ---------------
 
-Defines the AddressBook class that stores multiple contacts.
+Defines the AddressBook class.
 """
 
 from models.contact import Contact
@@ -10,9 +10,7 @@ from models.contact import Contact
 
 class AddressBook:
     """
-    Represents a single Address Book.
-
-    An AddressBook stores multiple Contact objects.
+    Represents one Address Book.
     """
 
     def __init__(self, name: str):
@@ -21,28 +19,43 @@ class AddressBook:
 
     def add_contact(self, contact: Contact):
         """
-        Adds a Contact object to the address book.
+        Adds a contact after checking duplicates.
         """
+
+        for existing_contact in self.contacts:
+
+            if existing_contact == contact:
+                print(
+                    f"\nDuplicate Contact Found:"
+                    f" {contact.first_name} {contact.last_name}\n"
+                )
+                return False
+
         self.contacts.append(contact)
 
+        print(
+            f"\nContact Added Successfully:"
+            f" {contact.first_name} {contact.last_name}\n"
+        )
+
+        return True
+
     def display_contacts(self):
-        """
-        Displays all contacts stored in the address book.
-        """
+
         if not self.contacts:
-            print("\nNo contacts found.\n")
+            print("\nNo Contacts Available\n")
             return
 
         print(f"\nAddress Book : {self.name}")
-        print("-" * 50)
+        print("=" * 50)
 
         for index, contact in enumerate(self.contacts, start=1):
+
             print(f"\nContact {index}")
+
             print(contact)
+
             print("-" * 50)
 
     def total_contacts(self):
-        """
-        Returns the total number of contacts.
-        """
         return len(self.contacts)
