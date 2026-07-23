@@ -17,12 +17,14 @@ class AddressBook:
         self.name = name.strip()
         self.contacts = []
 
+    # -------------------------------
+    # Add Contact
+    # -------------------------------
+
     def add_contact(self, contact: Contact):
-        """
-        Adds a contact after checking duplicates.
-        """
 
         for existing_contact in self.contacts:
+
             if existing_contact == contact:
                 print(
                     f"\nDuplicate Contact Found: "
@@ -38,6 +40,10 @@ class AddressBook:
         )
 
         return True
+
+    # -------------------------------
+    # Edit Contact
+    # -------------------------------
 
     def edit_contact(
         self,
@@ -86,10 +92,11 @@ class AddressBook:
         print("\nContact Not Found.\n")
         return False
 
+    # -------------------------------
+    # Delete Contact
+    # -------------------------------
+
     def delete_contact(self, first_name, last_name):
-        """
-        Deletes an existing contact.
-        """
 
         for contact in self.contacts:
 
@@ -110,6 +117,58 @@ class AddressBook:
         print("\nContact Not Found.\n")
         return False
 
+    # -------------------------------
+    # Search by City
+    # -------------------------------
+
+    def search_by_city(self, city):
+
+        found = False
+
+        print(f"\nContacts in City : {city}")
+        print("=" * 50)
+
+        for contact in self.contacts:
+
+            if contact.city.lower() == city.lower():
+
+                print(contact)
+
+                print("-" * 50)
+
+                found = True
+
+        if not found:
+            print("No Contact Found.")
+
+    # -------------------------------
+    # Search by State
+    # -------------------------------
+
+    def search_by_state(self, state):
+
+        found = False
+
+        print(f"\nContacts in State : {state}")
+        print("=" * 50)
+
+        for contact in self.contacts:
+
+            if contact.state.lower() == state.lower():
+
+                print(contact)
+
+                print("-" * 50)
+
+                found = True
+
+        if not found:
+            print("No Contact Found.")
+
+    # -------------------------------
+    # Display Contacts
+    # -------------------------------
+
     def display_contacts(self):
 
         if not self.contacts:
@@ -122,8 +181,15 @@ class AddressBook:
         for index, contact in enumerate(self.contacts, start=1):
 
             print(f"\nContact {index}")
+
             print(contact)
+
             print("-" * 50)
 
+    # -------------------------------
+    # Total Contacts
+    # -------------------------------
+
     def total_contacts(self):
+
         return len(self.contacts)
