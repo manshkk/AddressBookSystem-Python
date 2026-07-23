@@ -1,31 +1,13 @@
-import importlib
-import models.contact
+import re
 
-importlib.reload(models.contact)
-
-from models.contact import Contact
-"""
-contact.py
-
-This module contains the Contact class which represents
-a single contact in the Address Book System.
-"""
+from exceptions.custom_exceptions import (
+    InvalidPhoneNumberException,
+    InvalidEmailException,
+    InvalidZipCodeException,
+)
 
 
 class Contact:
-    """
-    Represents a single contact.
-
-    Attributes:
-        first_name (str): Contact's first name
-        last_name (str): Contact's last name
-        address (str): Street address
-        city (str): City name
-        state (str): State name
-        zip_code (str): ZIP / Postal Code
-        phone (str): Phone number
-        email (str): Email address
-    """
 
     def __init__(
         self,
@@ -38,23 +20,40 @@ class Contact:
         phone: str,
         email: str,
     ):
-        """
-        Constructor used to initialize a Contact object.
-        """
+        first_name = first_name.strip()
+        last_name = last_name.strip()
+        address = address.strip()
+        city = city.strip()
+        state = state.strip()
+        zip_code = zip_code.strip()
+        phone = phone.strip()
+        email = email.strip()
 
-        self.first_name = first_name.strip()
-        self.last_name = last_name.strip()
-        self.address = address.strip()
-        self.city = city.strip()
-        self.state = state.strip()
-        self.zip_code = zip_code.strip()
-        self.phone = phone.strip()
-        self.email = email.strip()
+        if not phone.isdigit() or len(phone) != 10:
+            raise InvalidPhoneNumberException(
+                "Phone number must contain exactly 10 digits."
+            )
+
+        if not zip_code.isdigit() or len(zip_code) != 6:
+            raise InvalidZipCodeException(
+                "Zip code must contain exactly 6 digits."
+            )
+
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+
+        if not re.fullmatch(email_pattern, email):
+            raise InvalidEmailException("Invalid email address.")
+
+        self.first_name = first_name
+        self.last_name = last_name
+        self.address = address
+        self.city = city
+        self.state = state
+        self.zip_code = zip_code
+        self.phone = phone
+        self.email = email
 
     def __str__(self):
-        """
-        Returns a readable string representation of the Contact.
-        """
 
         return (
             f"\n"
@@ -69,10 +68,6 @@ class Contact:
         )
 
     def __repr__(self):
-        """
-        Returns the official representation of the object.
-        Useful while debugging.
-        """
 
         return (
             f"Contact("
@@ -83,13 +78,6 @@ class Contact:
         )
 
     def __eq__(self, other):
-        """
-        Compares two Contact objects.
-
-        Two contacts are considered equal if
-        both first name and last name are same
-        (case-insensitive).
-        """
 
         if not isinstance(other, Contact):
             return False
@@ -97,4 +85,4 @@ class Contact:
         return (
             self.first_name.lower() == other.first_name.lower()
             and self.last_name.lower() == other.last_name.lower()
-        )     self.email = email
+        )

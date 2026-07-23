@@ -1,76 +1,83 @@
-"""
-json_service.py
-
-Handles JSON file operations
-for the Address Book.
-"""
-
 import json
-import os
+from pathlib import Path
 
 
 class JSONService:
 
-    FILE_PATH = "data/addressbook.json"
+    FILE_PATH = Path("data/addressbook.json")
 
-    @classmethod
-    def save_contacts(cls, contacts):
-        """
-        Save contacts to a JSON file.
-        """
+    def __init__(self):
+        self.FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-        os.makedirs("data", exist_ok=True)
+    def save_contacts(self, contacts):
 
-        contact_list = []
+        try:
 
-        for contact in contacts:
+            data = []
 
-            contact_list.append({
+            for contact in contacts:
 
-                "first_name": contact.first_name,
-                "last_name": contact.last_name,
-                "address": contact.address,
-                "city": contact.city,
-                "state": contact.state,
-                "zip_code": contact.zip_code,
-                "phone": contact.phone,
-                "email": contact.email
+                data.append(
+                    {
+                        "first_name": contact.first_name,
+                        "last_name": contact.last_name,
+                        "address": contact.address,
+                        "city": contact.city,
+                        "state": contact.state,
+                        "zip_code": contact.zip_code,
+                        "phone": contact.phone,
+                        "email": contact.email,
+                    }
+                )
 
-            })
+            with open(self.FILE_PATH, "w") as file:
+                json.dump(data, file, indent=4)
 
-        with open(
-            cls.FILE_PATH,
-            "w",
-            encoding="utf-8"
-        ) as file:
+            return True
 
-            json.dump(
-                contact_list,
-                file,
-                indent=4
+        except PermissionError:
+            raise PermissionError(
+                "Permission denied while writing JSON file."
             )
 
-        print("\nContacts saved to JSON successfully.\n")
+        except TypeError as error:
+            raise TypeError(
+                f"JSON serialization error: {error}"
+            )
 
-    @classmethod
-    def read_contacts(cls):
-        """
-        Read contacts from JSON file.
-        """
+        except OSError as error:
+            raise OSError(
+                f"Unable to save JSON file: {error}"
+            )
 
-        if not os.path.exists(cls.FILE_PATH):
-            print("\nJSON file not found.\n")
-            return
+    def read_contacts(self):
 
-        with open(
-            cls.FILE_PATH,
-            "r",
-            encoding="utf-8"
-        ) as file:
+        try:
 
-            contacts = json.load(file)
+            if not self.FILE_PATH.exists():
+                raise FileNotFoundError(
+                    "JSON file does not exist."
+                )
 
-        print("\n========== CONTACTS FROM JSON ==========\n")
+            with open(self.FILE_PATH, "r") as file:
+                return json.load(file)
 
-        for contact in contacts:
-            print(contact)
+        except FileNotFoundError:
+            raise
+
+        except json.JSONDecodeError as error:
+            raise json.JSONDecodeError(
+                error.msg,
+                error.doc,
+                error.pos,
+            )
+
+        except PermissionError:
+            raise PermissionError(
+                "Permission denied while reading JSON file."
+            )
+
+        except OSError as error:
+            raise OSError(
+                f"Unable to read JSON file: {error}"
+            )

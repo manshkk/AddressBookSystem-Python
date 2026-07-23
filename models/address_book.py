@@ -1,49 +1,28 @@
-"""
-address_book.py
----------------
-
-Defines the AddressBook class.
-"""
-
 from models.contact import Contact
+from exceptions.custom_exceptions import (
+    DuplicateContactException,
+    ContactNotFoundException,
+)
 
 
 class AddressBook:
-    """
-    Represents one Address Book.
-    """
 
     def __init__(self, name: str):
         self.name = name.strip()
         self.contacts = []
-
-    # -------------------------------
-    # Add Contact
-    # -------------------------------
 
     def add_contact(self, contact: Contact):
 
         for existing_contact in self.contacts:
 
             if existing_contact == contact:
-                print(
-                    f"\nDuplicate Contact Found: "
-                    f"{contact.first_name} {contact.last_name}\n"
+                raise DuplicateContactException(
+                    f"Contact '{contact.first_name} {contact.last_name}' already exists."
                 )
-                return False
 
         self.contacts.append(contact)
 
-        print(
-            f"\nContact Added Successfully: "
-            f"{contact.first_name} {contact.last_name}\n"
-        )
-
         return True
-
-    # -------------------------------
-    # Edit Contact
-    # -------------------------------
 
     def edit_contact(
         self,
@@ -82,19 +61,11 @@ class AddressBook:
                 if email is not None:
                     contact.email = email
 
-                print(
-                    f"\nContact Updated Successfully: "
-                    f"{contact.first_name} {contact.last_name}\n"
-                )
-
                 return True
 
-        print("\nContact Not Found.\n")
-        return False
-
-    # -------------------------------
-    # Delete Contact
-    # -------------------------------
+        raise ContactNotFoundException(
+            f"Contact '{first_name} {last_name}' not found."
+        )
 
     def delete_contact(self, first_name, last_name):
 
@@ -107,301 +78,110 @@ class AddressBook:
 
                 self.contacts.remove(contact)
 
-                print(
-                    f"\nContact Deleted Successfully: "
-                    f"{contact.first_name} {contact.last_name}\n"
-                )
-
                 return True
 
-        print("\nContact Not Found.\n")
-        return False
-
-    # -------------------------------
-    # Search by City
-    # -------------------------------
+        raise ContactNotFoundException(
+            f"Contact '{first_name} {last_name}' not found."
+        )
 
     def search_by_city(self, city):
 
-        found = False
+        contacts = [
+            contact
+            for contact in self.contacts
+            if contact.city.lower() == city.lower()
+        ]
 
-        print(f"\nContacts in City : {city}")
-        print("=" * 50)
-
-        for contact in self.contacts:
-
-            if contact.city.lower() == city.lower():
-
-                print(contact)
-
-                print("-" * 50)
-
-                found = True
-
-        if not found:
-            print("No Contact Found.")
-    def view_by_city(self):
-    """
-    Displays contacts grouped by city.
-    """
-
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
-
-    city_dictionary = {}
-
-    for contact in self.contacts:
-
-        city = contact.city
-
-        if city not in city_dictionary:
-            city_dictionary[city] = []
-
-        city_dictionary[city].append(contact)
-
-    print("\n========== CONTACTS GROUPED BY CITY ==========\n")
-
-    for city, contacts in city_dictionary.items():
-
-        print(f"\nCity : {city}")
-        print("-" * 50)
-
-        for contact in contacts:
-            print(contact)
-            print("-" * 50)
-
-    def count_by_city(self):
-    """
-    Counts contacts in each city.
-    """
-
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
-
-    city_count = {}
-
-    for contact in self.contacts:
-
-        city = contact.city
-
-        if city in city_count:
-            city_count[city] += 1
-        else:
-            city_count[city] = 1
-
-    print("\n========== CONTACT COUNT BY CITY ==========\n")
-
-    for city, count in city_count.items():
-        print(f"{city:<20} : {count}")
-
-    # -------------------------------
-    # Search by State
-    # -------------------------------
+        return contacts
 
     def search_by_state(self, state):
 
-        found = False
+        contacts = [
+            contact
+            for contact in self.contacts
+            if contact.state.lower() == state.lower()
+        ]
 
-        print(f"\nContacts in State : {state}")
-        print("=" * 50)
+        return contacts
+
+    def view_by_city(self):
+
+        city_dictionary = {}
 
         for contact in self.contacts:
+            city_dictionary.setdefault(contact.city, []).append(contact)
 
-            if contact.state.lower() == state.lower():
-
-                print(contact)
-
-                print("-" * 50)
-
-                found = True
-
-        if not found:
-            print("No Contact Found.")
+        return city_dictionary
 
     def view_by_state(self):
-    """
-    Displays contacts grouped by state.
-    """
 
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
+        state_dictionary = {}
 
-    state_dictionary = {}
+        for contact in self.contacts:
+            state_dictionary.setdefault(contact.state, []).append(contact)
 
-    for contact in self.contacts:
+        return state_dictionary
 
-        state = contact.state
+    def count_by_city(self):
 
-        if state not in state_dictionary:
-            state_dictionary[state] = []
+        city_count = {}
 
-        state_dictionary[state].append(contact)
+        for contact in self.contacts:
+            city_count[contact.city] = city_count.get(contact.city, 0) + 1
 
-    print("\n========== CONTACTS GROUPED BY STATE ==========\n")
-
-    for state, contacts in state_dictionary.items():
-
-        print(f"\nState : {state}")
-        print("-" * 50)
-
-        for contact in contacts:
-            print(contact)
-            print("-" * 50)
+        return city_count
 
     def count_by_state(self):
-    """
-    Counts contacts in each state.
-    """
 
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
+        state_count = {}
 
-    state_count = {}
+        for contact in self.contacts:
+            state_count[contact.state] = state_count.get(contact.state, 0) + 1
 
-    for contact in self.contacts:
-
-        state = contact.state
-
-        if state in state_count:
-            state_count[state] += 1
-        else:
-            state_count[state] = 1
-
-    print("\n========== CONTACT COUNT BY STATE ==========\n")
-
-    for state, count in state_count.items():
-        print(f"{state:<20} : {count}")
+        return state_count
 
     def sort_by_name(self):
-    """
-    Displays contacts sorted alphabetically by first name,
-    then last name.
-    """
 
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
-
-    sorted_contacts = sorted(
-        self.contacts,
-        key=lambda contact: (
-            contact.first_name.lower(),
-            contact.last_name.lower()
+        return sorted(
+            self.contacts,
+            key=lambda contact: (
+                contact.first_name.lower(),
+                contact.last_name.lower(),
+            ),
         )
-    )
-
-    print("\n========== CONTACTS SORTED BY NAME ==========\n")
-
-    for index, contact in enumerate(sorted_contacts, start=1):
-
-        print(f"\nContact {index}")
-
-        print(contact)
-
-        print("-" * 50)
 
     def sort_by_city(self):
-    """
-    Displays contacts sorted by city.
-    """
 
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
-
-    sorted_contacts = sorted(
-        self.contacts,
-        key=lambda contact: (
-            contact.city.lower(),
-            contact.first_name.lower(),
-            contact.last_name.lower()
+        return sorted(
+            self.contacts,
+            key=lambda contact: (
+                contact.city.lower(),
+                contact.first_name.lower(),
+                contact.last_name.lower(),
+            ),
         )
-    )
-
-    print("\n========== CONTACTS SORTED BY CITY ==========\n")
-
-    for index, contact in enumerate(sorted_contacts, start=1):
-
-        print(f"\nContact {index}")
-        print(contact)
-        print("-" * 50)
 
     def sort_by_state(self):
-    """
-    Displays contacts sorted by state.
-    """
 
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
-
-    sorted_contacts = sorted(
-        self.contacts,
-        key=lambda contact: (
-            contact.state.lower(),
-            contact.first_name.lower(),
-            contact.last_name.lower()
+        return sorted(
+            self.contacts,
+            key=lambda contact: (
+                contact.state.lower(),
+                contact.first_name.lower(),
+                contact.last_name.lower(),
+            ),
         )
-    )
-
-    print("\n========== CONTACTS SORTED BY STATE ==========\n")
-
-    for index, contact in enumerate(sorted_contacts, start=1):
-
-        print(f"\nContact {index}")
-        print(contact)
-        print("-" * 50)
 
     def sort_by_zip(self):
-    """
-    Displays contacts sorted by zip code.
-    """
 
-    if not self.contacts:
-        print("\nNo Contacts Available.\n")
-        return
-
-    sorted_contacts = sorted(
-        self.contacts,
-        key=lambda contact: contact.zip_code
-    )
-
-    print("\n========== CONTACTS SORTED BY ZIP CODE ==========\n")
-
-    for index, contact in enumerate(sorted_contacts, start=1):
-
-        print(f"\nContact {index}")
-        print(contact)
-        print("-" * 50)
-
-    # -------------------------------
-    # Display Contacts
-    # -------------------------------
+        return sorted(
+            self.contacts,
+            key=lambda contact: contact.zip_code,
+        )
 
     def display_contacts(self):
 
-        if not self.contacts:
-            print("\nNo Contacts Available\n")
-            return
-
-        print(f"\nAddress Book : {self.name}")
-        print("=" * 50)
-
-        for index, contact in enumerate(self.contacts, start=1):
-
-            print(f"\nContact {index}")
-
-            print(contact)
-
-            print("-" * 50)
-
-    # -------------------------------
-    # Total Contacts
-    # -------------------------------
+        return self.contacts
 
     def total_contacts(self):
 

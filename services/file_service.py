@@ -1,53 +1,59 @@
-"""
-file_service.py
----------------
-
-Handles reading and writing contacts
-to a text file.
-"""
-
-import os
+from pathlib import Path
 
 
 class FileService:
 
-    FILE_PATH = "data/addressbook.txt"
+    FILE_PATH = Path("data/addressbook.txt")
 
-    @classmethod
-    def save_contacts(cls, contacts):
-        """
-        Saves contacts to a text file.
-        """
+    def __init__(self):
+        self.FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-        os.makedirs("data", exist_ok=True)
+    def save_contacts(self, contacts):
 
-        with open(cls.FILE_PATH, "w", encoding="utf-8") as file:
+        try:
 
-            for contact in contacts:
+            with open(self.FILE_PATH, "w") as file:
 
-                file.write(
-                    f"{contact.first_name},"
-                    f"{contact.last_name},"
-                    f"{contact.address},"
-                    f"{contact.city},"
-                    f"{contact.state},"
-                    f"{contact.zip_code},"
-                    f"{contact.phone},"
-                    f"{contact.email}\n"
+                for contact in contacts:
+
+                    file.write(str(contact))
+                    file.write("\n")
+                    file.write("-" * 50)
+                    file.write("\n")
+
+            return True
+
+        except PermissionError:
+            raise PermissionError(
+                "Permission denied while writing to the file."
+            )
+
+        except OSError as error:
+            raise OSError(
+                f"Unable to save contacts: {error}"
+            )
+
+    def read_contacts(self):
+
+        try:
+
+            if not self.FILE_PATH.exists():
+                raise FileNotFoundError(
+                    "Address book file does not exist."
                 )
 
-        print("\nContacts saved successfully.\n")
+            with open(self.FILE_PATH, "r") as file:
+                return file.read()
 
-    @classmethod
-    def read_contacts(cls):
+        except FileNotFoundError:
+            raise
 
-        if not os.path.exists(cls.FILE_PATH):
-            print("\nNo saved file found.\n")
-            return
+        except PermissionError:
+            raise PermissionError(
+                "Permission denied while reading the file."
+            )
 
-        print("\n========== SAVED CONTACTS ==========\n")
-
-        with open(cls.FILE_PATH, "r", encoding="utf-8") as file:
-
-            for line in file:
-                print(line.strip())
+        except OSError as error:
+            raise OSError(
+                f"Unable to read contacts: {error}"
+            )

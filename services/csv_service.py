@@ -1,85 +1,103 @@
-"""
-csv_service.py
-
-Handles CSV file operations
-for the Address Book.
-"""
-
 import csv
-import os
+from pathlib import Path
 
 
 class CSVService:
 
-    FILE_PATH = "data/addressbook.csv"
+    FILE_PATH = Path("data/addressbook.csv")
 
-    @classmethod
-    def save_contacts(cls, contacts):
-        """
-        Save contacts into CSV file.
-        """
+    def __init__(self):
+        self.FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-        os.makedirs("data", exist_ok=True)
+    def save_contacts(self, contacts):
 
-        with open(
-            cls.FILE_PATH,
-            "w",
-            newline="",
-            encoding="utf-8"
-        ) as file:
+        try:
 
-            writer = csv.writer(file)
+            with open(self.FILE_PATH, "w", newline="") as file:
 
-            # Header Row
-            writer.writerow([
-                "First Name",
-                "Last Name",
-                "Address",
-                "City",
-                "State",
-                "Zip Code",
-                "Phone",
-                "Email"
-            ])
+                writer = csv.writer(file)
 
-            # Data Rows
-            for contact in contacts:
+                writer.writerow(
+                    [
+                        "First Name",
+                        "Last Name",
+                        "Address",
+                        "City",
+                        "State",
+                        "Zip Code",
+                        "Phone",
+                        "Email",
+                    ]
+                )
 
-                writer.writerow([
-                    contact.first_name,
-                    contact.last_name,
-                    contact.address,
-                    contact.city,
-                    contact.state,
-                    contact.zip_code,
-                    contact.phone,
-                    contact.email
-                ])
+                for contact in contacts:
 
-        print("\nContacts saved to CSV successfully.\n")
+                    writer.writerow(
+                        [
+                            contact.first_name,
+                            contact.last_name,
+                            contact.address,
+                            contact.city,
+                            contact.state,
+                            contact.zip_code,
+                            contact.phone,
+                            contact.email,
+                        ]
+                    )
 
-    @classmethod
-    def read_contacts(cls):
-        """
-        Read contacts from CSV file.
-        """
+            return True
 
-        if not os.path.exists(cls.FILE_PATH):
-            print("\nCSV file not found.\n")
-            return
+        except PermissionError:
+            raise PermissionError(
+                "Permission denied while writing CSV file."
+            )
 
-        print("\n========== CONTACTS FROM CSV ==========\n")
+        except csv.Error as error:
+            raise csv.Error(
+                f"CSV write error: {error}"
+            )
 
-        with open(
-            cls.FILE_PATH,
-            "r",
-            newline="",
-            encoding="utf-8"
-        ) as file:
+        except OSError as error:
+            raise OSError(
+                f"Unable to save CSV file: {error}"
+            )
 
-            reader = csv.reader(file)
+    def read_contacts(self):
 
-            next(reader)  # Skip header
+        try:
 
-            for row in reader:
-                print(row)
+            if not self.FILE_PATH.exists():
+                raise FileNotFoundError(
+                    "CSV file does not exist."
+                )
+
+            contacts = []
+
+            with open(self.FILE_PATH, "r", newline="") as file:
+
+                reader = csv.reader(file)
+
+                next(reader, None)
+
+                for row in reader:
+                    contacts.append(row)
+
+            return contacts
+
+        except FileNotFoundError:
+            raise
+
+        except PermissionError:
+            raise PermissionError(
+                "Permission denied while reading CSV file."
+            )
+
+        except csv.Error as error:
+            raise csv.Error(
+                f"CSV read error: {error}"
+            )
+
+        except OSError as error:
+            raise OSError(
+                f"Unable to read CSV file: {error}"
+            )
