@@ -140,6 +140,36 @@ class AddressBook:
 
         if not found:
             print("No Contact Found.")
+    def view_by_city(self):
+    """
+    Displays contacts grouped by city.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    city_dictionary = {}
+
+    for contact in self.contacts:
+
+        city = contact.city
+
+        if city not in city_dictionary:
+            city_dictionary[city] = []
+
+        city_dictionary[city].append(contact)
+
+    print("\n========== CONTACTS GROUPED BY CITY ==========\n")
+
+    for city, contacts in city_dictionary.items():
+
+        print(f"\nCity : {city}")
+        print("-" * 50)
+
+        for contact in contacts:
+            print(contact)
+            print("-" * 50)
 
     # -------------------------------
     # Search by State
@@ -164,6 +194,37 @@ class AddressBook:
 
         if not found:
             print("No Contact Found.")
+
+    def view_by_state(self):
+    """
+    Displays contacts grouped by state.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    state_dictionary = {}
+
+    for contact in self.contacts:
+
+        state = contact.state
+
+        if state not in state_dictionary:
+            state_dictionary[state] = []
+
+        state_dictionary[state].append(contact)
+
+    print("\n========== CONTACTS GROUPED BY STATE ==========\n")
+
+    for state, contacts in state_dictionary.items():
+
+        print(f"\nState : {state}")
+        print("-" * 50)
+
+        for contact in contacts:
+            print(contact)
+            print("-" * 50)
 
     # -------------------------------
     # Display Contacts
