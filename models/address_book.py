@@ -304,6 +304,80 @@ class AddressBook:
 
         print("-" * 50)
 
+    def sort_by_city(self):
+    """
+    Displays contacts sorted by city.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    sorted_contacts = sorted(
+        self.contacts,
+        key=lambda contact: (
+            contact.city.lower(),
+            contact.first_name.lower(),
+            contact.last_name.lower()
+        )
+    )
+
+    print("\n========== CONTACTS SORTED BY CITY ==========\n")
+
+    for index, contact in enumerate(sorted_contacts, start=1):
+
+        print(f"\nContact {index}")
+        print(contact)
+        print("-" * 50)
+
+    def sort_by_state(self):
+    """
+    Displays contacts sorted by state.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    sorted_contacts = sorted(
+        self.contacts,
+        key=lambda contact: (
+            contact.state.lower(),
+            contact.first_name.lower(),
+            contact.last_name.lower()
+        )
+    )
+
+    print("\n========== CONTACTS SORTED BY STATE ==========\n")
+
+    for index, contact in enumerate(sorted_contacts, start=1):
+
+        print(f"\nContact {index}")
+        print(contact)
+        print("-" * 50)
+
+    def sort_by_zip(self):
+    """
+    Displays contacts sorted by zip code.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    sorted_contacts = sorted(
+        self.contacts,
+        key=lambda contact: contact.zip_code
+    )
+
+    print("\n========== CONTACTS SORTED BY ZIP CODE ==========\n")
+
+    for index, contact in enumerate(sorted_contacts, start=1):
+
+        print(f"\nContact {index}")
+        print(contact)
+        print("-" * 50)
+
     # -------------------------------
     # Display Contacts
     # -------------------------------
