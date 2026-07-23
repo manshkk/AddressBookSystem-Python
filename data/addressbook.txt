@@ -1,0 +1,2 @@
+Rahul,Sharma,MG Road,Bangalore,Karnataka,560001,9876543210,rahul@gmail.com
+Amit,Kumar,Sector 10,Delhi,Delhi,110001,9999999999,amit@gmail.com
