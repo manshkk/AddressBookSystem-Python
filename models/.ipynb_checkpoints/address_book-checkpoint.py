@@ -276,6 +276,34 @@ class AddressBook:
     for state, count in state_count.items():
         print(f"{state:<20} : {count}")
 
+    def sort_by_name(self):
+    """
+    Displays contacts sorted alphabetically by first name,
+    then last name.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    sorted_contacts = sorted(
+        self.contacts,
+        key=lambda contact: (
+            contact.first_name.lower(),
+            contact.last_name.lower()
+        )
+    )
+
+    print("\n========== CONTACTS SORTED BY NAME ==========\n")
+
+    for index, contact in enumerate(sorted_contacts, start=1):
+
+        print(f"\nContact {index}")
+
+        print(contact)
+
+        print("-" * 50)
+
     # -------------------------------
     # Display Contacts
     # -------------------------------
