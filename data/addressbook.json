@@ -1,0 +1,22 @@
+[
+    {
+        "first_name": "Rahul",
+        "last_name": "Sharma",
+        "address": "MG Road",
+        "city": "Bangalore",
+        "state": "Karnataka",
+        "zip_code": "560001",
+        "phone": "9876543210",
+        "email": "rahul@gmail.com"
+    },
+    {
+        "first_name": "Amit",
+        "last_name": "Kumar",
+        "address": "Sector 10",
+        "city": "Delhi",
+        "state": "Delhi",
+        "zip_code": "110001",
+        "phone": "9999999999",
+        "email": "amit@gmail.com"
+    }
+]
