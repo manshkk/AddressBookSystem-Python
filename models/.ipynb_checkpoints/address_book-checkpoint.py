@@ -171,6 +171,31 @@ class AddressBook:
             print(contact)
             print("-" * 50)
 
+    def count_by_city(self):
+    """
+    Counts contacts in each city.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    city_count = {}
+
+    for contact in self.contacts:
+
+        city = contact.city
+
+        if city in city_count:
+            city_count[city] += 1
+        else:
+            city_count[city] = 1
+
+    print("\n========== CONTACT COUNT BY CITY ==========\n")
+
+    for city, count in city_count.items():
+        print(f"{city:<20} : {count}")
+
     # -------------------------------
     # Search by State
     # -------------------------------
@@ -225,6 +250,31 @@ class AddressBook:
         for contact in contacts:
             print(contact)
             print("-" * 50)
+
+    def count_by_state(self):
+    """
+    Counts contacts in each state.
+    """
+
+    if not self.contacts:
+        print("\nNo Contacts Available.\n")
+        return
+
+    state_count = {}
+
+    for contact in self.contacts:
+
+        state = contact.state
+
+        if state in state_count:
+            state_count[state] += 1
+        else:
+            state_count[state] = 1
+
+    print("\n========== CONTACT COUNT BY STATE ==========\n")
+
+    for state, count in state_count.items():
+        print(f"{state:<20} : {count}")
 
     # -------------------------------
     # Display Contacts
